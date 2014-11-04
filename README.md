@@ -20,8 +20,8 @@ added to control that via hotkeys.
 
 Having eventually constructed this module, the humble author
 was then endlessly annoyed by how big his preferred borders
-ended up being. Therefore, he made his **borders automatically
-shrink based on number of windows**.
+ended up being. Therefore, he made his **[borders automatically
+shrink based on number of windows](http://gfycat.com/SparseObeseGalapagosmockingbird)**.
 
 Installation
 --

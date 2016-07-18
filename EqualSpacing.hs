@@ -16,7 +16,7 @@ equalSpacing :: Int -> Int -> Rational -> Int -> l a -> ModifiedLayout EqualSpac
 equalSpacing gap add mult min = ModifiedLayout (EqualSpacing gap add mult min)
 
 
-data EqualSpacingMsg = MoreSpacing | LessSpacing deriving (Typeable)
+data EqualSpacingMsg = MoreSpacing Int | LessSpacing Int deriving (Typeable)
 
 
 instance Message EqualSpacingMsg
@@ -27,12 +27,16 @@ data EqualSpacing a = EqualSpacing
     , add  :: Int
     , mult :: Rational
     , min  :: Int
-    } deriving (Show, Read)
+    } deriving (Read)
+
+
+instance Show (EqualSpacing a) where
+    show (EqualSpacing g a _ m) = "EqualSpacing " ++ show g ++ " " ++ show a ++ " " ++ show m
 
 
 instance LayoutModifier EqualSpacing a where
 
-    modifierDescription eqsp = "EqualSpacing " ++ show eqsp
+    modifierDescription = show
 
     modifyLayout eqsp workspace screen =
         runLayout workspace $ shrinkScreen eqsp ((length $ integrate' $ stack workspace) - 1) screen
@@ -42,11 +46,11 @@ instance LayoutModifier EqualSpacing a where
 
     pureMess eqsp msg
 
-        | Just MoreSpacing <- fromMessage msg = Just $
-            eqsp { gap = (1+(fi $ gap eqsp)) }
+        | Just (MoreSpacing d) <- fromMessage msg = Just $
+            eqsp { gap = (d+(fi $ gap eqsp)) }
 
-        | Just LessSpacing <- fromMessage msg = Just $
-            eqsp { gap = max 0 (-1+(fi $ gap eqsp)) }
+        | Just (LessSpacing d) <- fromMessage msg = Just $
+            eqsp { gap = max 0 (-d+(fi $ gap eqsp)) }
 
         | otherwise = Nothing
 
